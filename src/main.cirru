@@ -4,8 +4,8 @@ var
   recorder $ require :actions-recorder
 
 require :origami-ui
-require :../styles/main.css
 require :actions-recorder/style/actions-recorder.css
+require :../styles/main.css
 
 var
   schema $ require :./schema

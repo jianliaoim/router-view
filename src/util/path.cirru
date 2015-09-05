@@ -3,26 +3,40 @@ var
   Immutable $ require :immutable
   prelude $ require :./prelude
 
-var queryParse $ \ (info chunks)
-  cond (is chunks.size 0) info
+var trimSlash $ \ (chunk)
+  cond (is (chunk.substr 0 1) :/)
+    trimSlash (chunk.substr 1)
+    cond (is (chunk.substr -1) :/)
+      trimSlash (chunk.substr 0 (- chunk.length 1))
+      , chunk
+
+var queryParse $ \ (data chunks)
+  cond (is chunks.size 0) data
     chunks.map $ \ (chunk)
       prelude.let (chunk.split :=) $ \ (pieces)
         var
           ([]~ key value) pieces
+        console.log :queryParse key value pieces
         queryParse
-          info.set key value
+          data.set key value
           chunks.slice 1
 
 = exports.parse $ \ (segment)
   var
     ([]~ chunkPath chunkQuery) (segment.split :?)
+  = chunkPath $ trimSlash chunkPath
   = chunkQuery $ or chunkQuery :
   Immutable.fromJS $ {}
-    :path $ chunkPath.split :/
-    :query $ queryParse (Immutable.Map)
-      Immutable.fromJS (chunkQuery.split :&)
+    :path $ cond (> chunkPath.length 0)
+      chunkPath.split :/
+      array
+    :query $ cond (> chunkQuery.length 0)
+      queryParse (Immutable.Map)
+        Immutable.fromJS (chunkQuery.split :&)
+      object
 
 = exports.stringify $ \ (info)
+  console.log :stringify (info.toJS)
   var stringPath $ ... info
     get :path
     join :/
@@ -31,7 +45,9 @@ var queryParse $ \ (info chunks)
     map $ \ (value key)
       + key := value
     join :&
-  + stringPath :? stringQuery
+  cond (> stringQuery.length 0)
+    + :/ stringPath :? stringQuery
+    + :/ stringPath
 
 = exports.fill $ \ (pieces data)
   pieces.map $ \ (chunk)
@@ -40,16 +56,25 @@ var queryParse $ \ (info chunks)
       , chunk
 
 var matchHelper $ \ (pieces rulePieces result)
-  cond
-    and (is pieces.size 0) (is rulePieces.size 0)
-    , result
-    cond (result.get :end) result
+  var
+    allLong $ and (> pieces.size 0) (> rulePieces.size 0)
+    allEnd $ and (is pieces.size 0) (is rulePieces.size 0)
+  case true
+    allEnd result
+    allLong
       prelude.let (rulePieces.get 0) $ \ (rule)
         prelude.let (pieces.get 0) $ \ (piece)
           cond (is (rule.substr 0 1) ::)
-            result.setIn ([] :data (rule.substr 1)) piece
-            result.set :end (is rule piece)
+            matchHelper (pieces.slice 1) (rulePieces.slice 1)
+              result.setIn ([] :data (rule.substr 1)) piece
+            cond (is rule piece)
+              matchHelper (pieces.slice 1) (rulePieces.slice 1) result
+              result.set :failed true
+    else $ result.set :failed true
 
 = exports.match $ \ (pieces rulePieces)
-  matchHelper pieces rulePieces
-    Immutable.fromJS $ {} (:end false) (:data ({}))
+  console.log :match (pieces.toJS) (rulePieces.toJS)
+  var result $ matchHelper pieces rulePieces
+    Immutable.fromJS $ {} (:failed false) (:data ({}))
+  console.log :result (result.toJS)
+  return result

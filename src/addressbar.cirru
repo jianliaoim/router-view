@@ -3,6 +3,7 @@ var
   React $ require :react
   Immutable $ require :immutable
   utilPath $ require :./util/path
+  prelude $ require :./util/prelude
 
 var
   div $ React.createFactory :div
@@ -44,17 +45,29 @@ var
 
   :onPopstate $ \ ()
     var address $ + location.pathname (or location.search :)
-    var info $ utilPath.parse address
-    var targetRule $ this.state.rules.find $ \ (rule)
-      utilPath.match (info.get :path) (rule.get :path)
-    if (? targetRule)
+    var addressInfo $ utilPath.parse address
+    var targetRule $ this.state.rules.reduce
+      \ (acc rule)
+        cond (acc.get :failed)
+          prelude.let
+            utilPath.match (addressInfo.get :path) (rule.get :path)
+            \ (result) $ result.set :name (rule.get :name)
+          , acc
+      Immutable.fromJS $ {} (:failed true)
+    console.log :targetRule (targetRule.toJS)
+    if (targetRule.get :failed)
       do
+        console.error $ + ":Case not covered in rules: " address
+      do
+        var info $ Immutable.Map $ {}
+          :name $ targetRule.get :name
+          :data $ targetRule.get :data
+          :query $ addressInfo.get :query
         this.props.onPopstate info
-      do
-        throw $ + ":Case not covered in rules: " address
     return undefined
 
   :renderAddress $ \ ()
+    console.log :address (this.state.rules.toJS) (this.props.router.toJS)
     var info $ this.state.rules.get (this.getName)
     var data (this.getData)
     utilPath.stringify

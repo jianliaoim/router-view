@@ -1,6 +1,6 @@
 
 var
-  React $ require :react
+  React $ require :react/addons
   Immutable $ require :immutable
 
 var
@@ -11,16 +11,18 @@ var
     require :actions-recorder/lib/panel/controller
   Addressbar $ React.createFactory $ require :../addressbar
   div $ React.createFactory :div
+  pre $ React.createFactory :pre
 
 = module.exports $ React.createClass $ {}
   :displayName :app-page
+  :mixins $ [] React.addons.pureRenderMixin
 
   :propTypes $ {}
     :store $ React.PropTypes.instanceOf Immutable.Map
 
   :goDemo $ \ ()
     actions.go $ {}
-      :name :home
+      :name :demo
       :data null
       :query $ {}
 
@@ -42,11 +44,11 @@ var
       :name :room
       :data $ {}
         :teamId :23
-        :room :34
+        :roomId :34
       :query $ {}
 
   :onPopstate $ \ (info)
-    actions.go info
+    actions.go (info.toJS)
 
   :renderAddress $ \ ()
     Addressbar $ {}
@@ -73,7 +75,10 @@ var
     div ({})
       this.renderAddress
       this.renderController
-      div ({} (:onClick this.goHome)) :goHome
-      div ({} (:onClick this.goDemo)) :goDemo
-      div ({} (:onClick this.goTeam)) :goTeam
-      div ({} (:onClick this.goRoom)) :goRoom
+      div ({} (:className :line))
+        div ({} (:className ":button is-attract") (:onClick this.goHome)) :goHome
+        div ({} (:className ":button is-attract") (:onClick this.goDemo)) :goDemo
+        div ({} (:className ":button is-attract") (:onClick this.goTeam)) :goTeam
+        div ({} (:className ":button is-attract") (:onClick this.goRoom)) :goRoom
+      pre ({} (:className :page-content))
+        JSON.stringify this.props.store null 2
