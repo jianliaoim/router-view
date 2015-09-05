@@ -37,7 +37,7 @@ var queryParse $ \ (data chunks)
       object
 
 = exports.stringify $ \ (info)
-  console.log :stringify (info.toJS)
+  -- console.log :stringify (info.toJS)
   var stringPath $ ... info
     get :path
     join :/
@@ -61,21 +61,53 @@ var matchHelper $ \ (pieces rulePieces result)
     allLong $ and (> pieces.size 0) (> rulePieces.size 0)
     allEnd $ and (is pieces.size 0) (is rulePieces.size 0)
   case true
+    (result.get :skipped) result
     allEnd result
     allLong
       prelude.let (rulePieces.get 0) $ \ (rule)
         prelude.let (pieces.get 0) $ \ (piece)
-          cond (is (rule.substr 0 1) ::)
-            matchHelper (pieces.slice 1) (rulePieces.slice 1)
-              result.setIn ([] :data (rule.substr 1)) piece
-            cond (is rule piece)
+          case true
+            (is rule :~)
+              result.set :skipped true
+            (is (rule.substr 0 1) ::)
+              matchHelper (pieces.slice 1) (rulePieces.slice 1)
+                result.setIn ([] :data (rule.substr 1)) piece
+            (is rule piece)
               matchHelper (pieces.slice 1) (rulePieces.slice 1) result
+            else
               result.set :failed true
     else $ result.set :failed true
 
 = exports.match $ \ (pieces rulePieces)
-  console.log :match (pieces.toJS) (rulePieces.toJS)
+  -- console.log :match (pieces.toJS) (rulePieces.toJS)
   var result $ matchHelper pieces rulePieces
-    Immutable.fromJS $ {} (:failed false) (:data ({}))
-  console.log :result (result.toJS)
+    Immutable.fromJS $ {} (:failed false) (:skipped false) (:data ({}))
+  -- console.log :result (result.toJS)
   return result
+
+= exports.getCurrentInfo $ \ (rules)
+  var address $ + location.pathname (or location.search :)
+  var addressInfo $ exports.parse address
+  var targetRule $ rules.reduce
+    \ (acc rule)
+      cond (acc.get :failed)
+        prelude.let
+          exports.match (addressInfo.get :path) (rule.get :path)
+          \ (result) $ result.set :name (rule.get :name)
+        , acc
+    Immutable.fromJS $ {} (:failed true)
+  var info null
+  if (targetRule.get :failed)
+    do
+      console.error $ + ":Case not covered in rules: " address
+    do
+      = info $ Immutable.Map $ {}
+        :name $ targetRule.get :name
+        :data $ targetRule.get :data
+        :query $ addressInfo.get :query
+  return info
+
+= exports.expandRoutes $ \ (rules)
+  rules.map $ \ (rule name)
+    var info $ exports.parse rule
+    info.set :name name

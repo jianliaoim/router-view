@@ -1,44 +1,58 @@
 
-Workflow based on Webpack & CirruScript
+Router View for React
 ----
 
-Scaffold for personal projects.
+> Location bar is a view, so we can time travel.
 
-### Bash Alias
+Demo http://router-view.mvc-works.org/
 
-```bash
-# webpack-workflow
-export wf=/Users/chen/repo/mvc-works/webpack-workflow/
-alias workflow="
-cp $wf/gulpfile.* .;
-cp $wf/package.json .;
-cp $wf/webpack.* .;
-cp $wf/template.cirru .;
-cp $wf/.gitignore .;
-cp $wf/.npmignore .;
-cp $wf/README.md .;
-mkdir src/;
-touch src/main.cirru;
-git init;
-"
-```
+### Code ideas
+
+While playing with time travel debugger, I found router not controlled by it.
+After looking into that, I suggest location bar being regarded as a view from store.
+This demo is based on React and Immutable Data Structure.
 
 ### Usage
 
-* Development
+This project is experimental, check source code for details.
 
-```text
-npm i
-gulp html
-webpack-dev-server --hot
+> Code is in CirruScript. Run `gulp script` to generate JavaScript in `lib/`.
+
+```
+npm i --save router-view
 ```
 
-* Production
+```coffee
+Addressbar = require 'router-view'
+utilPath = require 'router-view/lib/util/path'
 
-```text
-gulp buld
-gulp rsync
+routes =
+  home: '/'
+  demo: '/demo'
+  skip: '/skip/~'
+  team: 'team/:teamId'
+  room: 'team/:teamId/room/:roomId'
+
+store = store.set 'router', utilPath.getCurrentInfo(utilPath.expandRoutes(routes))
+
+Addressbar
+  router: store.get('router')
+  rules: routes
+  onPopstate: (info) ->
 ```
+
+`~` refers to "any path" in this program. And in store the route information is like:
+
+```coffee
+name: 'room'
+data:
+  teamId: '12'
+  roomId: '34'
+query:
+  isPrivate: 'true'
+```
+
+You see, parameters and querystrings are supported.
 
 ### License
 

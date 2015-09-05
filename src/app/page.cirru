@@ -5,13 +5,16 @@ var
 
 var
   actions $ require :../actions
+  routes $ require :../routes
 
 var
   Controller $ React.createFactory
     require :actions-recorder/lib/panel/controller
   Addressbar $ React.createFactory $ require :../addressbar
+  a $ React.createFactory :a
   div $ React.createFactory :div
   pre $ React.createFactory :pre
+  span $ React.createFactory :span
 
 = module.exports $ React.createClass $ {}
   :displayName :app-page
@@ -29,6 +32,12 @@ var
   :goHome $ \ ()
     actions.go $ {}
       :name :home
+      :data null
+      :query $ {}
+
+  :goSkip $ \ ()
+    actions.go $ {}
+      :name :skip
       :data null
       :query $ {}
 
@@ -62,11 +71,7 @@ var
   :renderAddress $ \ ()
     Addressbar $ {}
       :router $ this.props.store.get :router
-      :rules $ {}
-        :home :/
-        :demo :/demo
-        :team :team/:teamId
-        :room :team/:teamId/room/:roomId
+      :rules routes
       :onPopstate this.onPopstate
 
   :renderController $ \ ()
@@ -80,15 +85,31 @@ var
       :onPeek $ \ (position) (actions.internalPeek position)
       :onDiscard actions.internalDiscard
 
+  :renderBanner $ \ ()
+    div ({} (:className :bannr))
+      div ({} (:className ":heading level-2")) ":Router View for React"
+      div ({} (:className ":line is-minor"))
+        span null ":Location bar is a view! So we time travel! "
+        a ({} (:href :http://github.com/mvc-works/router-view)) ":Read more on GitHub"
+
   :render $ \ ()
-    div ({})
+    div ({} (:className :app-page))
+      this.renderBanner
       this.renderAddress
       this.renderController
+      div ({} (:className :page-divider))
       div ({} (:className :line))
         div ({} (:className ":button is-attract") (:onClick this.goHome)) :goHome
         div ({} (:className ":button is-attract") (:onClick this.goDemo)) :goDemo
+        div ({} (:className ":button is-attract") (:onClick this.goSkip)) :goSkip
         div ({} (:className ":button is-attract") (:onClick this.goTeam)) :goTeam
         div ({} (:className ":button is-attract") (:onClick this.goRoom)) :goRoom
         div ({} (:className ":button is-attract") (:onClick this.goQuery)) :goQuery
+      div ({} (:className :line))
+        span null ":Also try: "
+        a ({} (:href :/skip/whatever/path)) :/skip/whatever/path
+      div ({} (:className :page-divider))
+      div ({} (:className :line))
+        span ({} (:className :is-bold)) ":Store is:"
       pre ({} (:className :page-content))
         JSON.stringify this.props.store null 2

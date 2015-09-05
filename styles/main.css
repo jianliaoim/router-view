@@ -1,6 +1,15 @@
 
-body {}
+body {
+}
 
 .actions-recorder-controller {
   width: 300px;
+}
+
+.app-page {
+  padding: 40px;
+}
+
+.page-divider {
+  margin: 40px 0;
 }

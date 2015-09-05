@@ -38,36 +38,18 @@ var
     this.props.router.get :query
 
   :expandRules $ \ ()
-    var rules $ Immutable.fromJS this.props.rules
-    rules.map $ \ (rule name)
+    this.props.rules.map $ \ (rule name)
       var info $ utilPath.parse rule
       info.set :name name
 
   :onPopstate $ \ ()
-    var address $ + location.pathname (or location.search :)
-    var addressInfo $ utilPath.parse address
-    var targetRule $ this.state.rules.reduce
-      \ (acc rule)
-        cond (acc.get :failed)
-          prelude.let
-            utilPath.match (addressInfo.get :path) (rule.get :path)
-            \ (result) $ result.set :name (rule.get :name)
-          , acc
-      Immutable.fromJS $ {} (:failed true)
-    console.log :targetRule (targetRule.toJS)
-    if (targetRule.get :failed)
-      do
-        console.error $ + ":Case not covered in rules: " address
-      do
-        var info $ Immutable.Map $ {}
-          :name $ targetRule.get :name
-          :data $ targetRule.get :data
-          :query $ addressInfo.get :query
-        this.props.onPopstate info
+    var info $ utilPath.getCurrentInfo this.state.rules
+    if (? info) $ do
+      this.props.onPopstate info
     return undefined
 
   :renderAddress $ \ ()
-    console.log :address (this.state.rules.toJS) (this.props.router.toJS)
+    -- console.log :address (this.state.rules.toJS) (this.props.router.toJS)
     var info $ this.state.rules.get (this.getName)
     var data (this.getData)
     utilPath.stringify

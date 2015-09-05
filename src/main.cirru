@@ -10,12 +10,16 @@ require :../styles/main.css
 var
   schema $ require :./schema
   updater $ require :./updater
+  utilPath $ require :./util/path
+  routes $ require :./routes
 
 var
   Page $ React.createFactory $ require :./app/page
 
 var defaultInfo $ {}
-  :initial schema.store
+  :initial $ schema.store.set :router
+    utilPath.getCurrentInfo
+      utilPath.expandRoutes routes
   :updater updater
 
 recorder.setup defaultInfo

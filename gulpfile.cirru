@@ -14,10 +14,10 @@ gulp.task :rsync $ \ (cb)
   wrapper.rsync
     object
       :ssh true
-      :src $ array :index.html :build
+      :src $ array :index.html :build :styles
       :recursive true
       :args $ array :--verbose
-      :dest :tiye:~/repo/workflow/
+      :dest :tiye:~/repo/router-view/
       :deleteAll true
     \ (error stdout stderr cmd)
       if (? error)
@@ -31,7 +31,7 @@ gulp.task :script $ \ ()
     script $ require :gulp-cirru-script
 
   ... gulp
-    src :src/*.cirru
+    src :src/**/*.cirru
     pipe $ script
     pipe $ gulp.dest :lib/
 
@@ -42,8 +42,8 @@ gulp.task :html $ \ (cb)
     assets
   if (not env.dev) $ do
     = assets $ require :./build/assets.json
-    = env.main $ + :./build/ assets.main
-    = env.vendor $ + :./build/ assets.vendor
+    = env.main $ + :/build/ assets.main
+    = env.vendor $ + :/build/ assets.vendor
   fs.writeFile :index.html (html env) cb
 
 gulp.task :del $ \ (cb)

@@ -1,15 +1,15 @@
 {
   "name": "router-view",
   "version": "0.0.1",
-  "description": "Web app scaffold based on Webpack",
-  "main": "main.js",
+  "description": "Router view for React",
+  "main": "./lib/addressbar",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jiyinyiyong",
   "license": "MIT",
   "keywords": [
-    "workflow"
+    "router", "react-component"
   ],
   "devDependencies": {
     "actions-recorder": "0.0.4",
@@ -30,8 +30,7 @@
   },
   "dependencies": {
     "immutable": "^3.7.5",
-    "react": "^0.13.3",
-    "url-parse": "^1.0.2"
+    "react": "^0.13.3"
   },
   "repository": {
     "type": "git",
@@ -40,5 +39,5 @@
   "bugs": {
     "url": "https://github.com/mvc-works/router-view/issues"
   },
-  "homepage": "https://github.com/mvc-works/router-view"
+  "homepage": "http://router-view.mvc-works.org/"
 }
