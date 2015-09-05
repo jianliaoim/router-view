@@ -12,14 +12,15 @@ var trimSlash $ \ (chunk)
 
 var queryParse $ \ (data chunks)
   cond (is chunks.size 0) data
-    chunks.map $ \ (chunk)
-      prelude.let (chunk.split :=) $ \ (pieces)
-        var
-          ([]~ key value) pieces
-        console.log :queryParse key value pieces
-        queryParse
-          data.set key value
-          chunks.slice 1
+    chunks.reduce
+      \ (acc chunk)
+        prelude.let (chunk.split :=) $ \ (pieces)
+          var
+            ([]~ key value) pieces
+          queryParse
+            acc.set key value
+            chunks.slice 1
+      , data
 
 = exports.parse $ \ (segment)
   var

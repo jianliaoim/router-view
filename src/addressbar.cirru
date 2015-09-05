@@ -71,11 +71,15 @@ var
     var info $ this.state.rules.get (this.getName)
     var data (this.getData)
     utilPath.stringify
-      info.update :path $ \ (pieces)
-        utilPath.fill (info.get :path) data
+      ... info
+        set :path $ utilPath.fill (info.get :path) data
+        set :query (this.getQuery)
 
   :render $ \ ()
     var address (this.renderAddress)
-    if (isnt location.pathname address) $ do
+    var oldAddress $ cond (? location.search)
+      + location.pathname location.search
+      , location.pathname
+    if (isnt oldAddress address) $ do
       history.pushState null null address
     div ({} (:className :addressbar))

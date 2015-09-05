@@ -47,6 +47,15 @@ var
         :roomId :34
       :query $ {}
 
+  :goQuery $ \ ()
+    actions.go $ {}
+      :name :room
+      :data $ {}
+        :teamId :23
+        :roomId :34
+      :query $ {}
+        :isPrivate :true
+
   :onPopstate $ \ (info)
     actions.go (info.toJS)
 
@@ -80,5 +89,6 @@ var
         div ({} (:className ":button is-attract") (:onClick this.goDemo)) :goDemo
         div ({} (:className ":button is-attract") (:onClick this.goTeam)) :goTeam
         div ({} (:className ":button is-attract") (:onClick this.goRoom)) :goRoom
+        div ({} (:className ":button is-attract") (:onClick this.goQuery)) :goQuery
       pre ({} (:className :page-content))
         JSON.stringify this.props.store null 2
