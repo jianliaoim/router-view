@@ -2,30 +2,34 @@
 Immutable = require 'immutable'
 prelude = require './prelude'
 
-trimSlash = (chunk) ->
+exports.trimSlash = trimSlash = (chunk) ->
   if chunk.substr(0, 1) is '/'
     trimSlash chunk.substr(1)
   else if chunk.substr(-1) is '/'
     trimSlash chunk.substr(0, chunk.length-1)
   else chunk
 
-queryParse = (data, chunks) ->
+exports.queryParse = queryParse = (data, chunks) ->
   if (chunks.size is 0)
     data
   else
     chunks.reduce (acc, chunk) ->
       pieces = chunk.split('=')
-      {key, value} = pieces
+      [key, value] = pieces
       queryParse acc.set(key, value), chunks.slice(1)
     , data
 
+o = Immutable.Map()
 exports.parse = (segment) ->
   [chunkPath, chunkQuery] = segment.split('?')
   chunkPath = trimSlash(chunkPath)
   chunkQuery = chunkQuery or ''
-  Immutable.fromJS
-    path: if (chunkPath.length > 0) then chunkPath.split '/' else []
-    query: if (chunkQuery.length > 0) then queryParse(Immutable.Map(), Immutable.fromJS(chunkQuery.split('&'))) else {}
+  thePath = if (chunkPath.length > 0) then chunkPath.split('/') else []
+  if chunkQuery.length > 0
+    theQuery = queryParse o, Immutable.fromJS(chunkQuery.split('&'))
+  else
+    theQuery = o
+  Immutable.fromJS(path: thePath, query: theQuery)
 
 exports.stringify = (info) ->
   # console.log :stringify (info.toJS)
@@ -71,6 +75,7 @@ exports.match = (pieces, rulePieces) ->
     data: {}))
   # console.log :result (result.toJS)
   result
+
 exports.getCurrentInfo = (rules) ->
   address = location.pathname + (location.search or '')
   addressInfo = exports.parse(address)
