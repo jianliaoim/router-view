@@ -10,7 +10,7 @@ module.exports = React.createClass
   displayName: 'addressbar'
 
   propTypes:
-    router: React.PropTypes.instanceOf(Immutable.Map)
+    route: React.PropTypes.instanceOf(Immutable.Map)
     rules: React.PropTypes.object.isRequired
     onPopstate: React.PropTypes.func.isRequired
     inHash: React.PropTypes.bool
@@ -45,7 +45,7 @@ module.exports = React.createClass
 
   renderInHistory: (address) ->
     routes = utilPath.expandRoutes(@props.rules)
-    address = utilPath.makeAddress routes, @props.router
+    address = utilPath.makeAddress routes, @props.route
     if location.search?
       oldAddress = "#{location.pathname}#{location.search}"
     else
@@ -56,7 +56,7 @@ module.exports = React.createClass
 
   renderInHash: (address) ->
     routes = utilPath.expandRoutes(@props.rules)
-    address = utilPath.makeAddress routes, @props.router
+    address = utilPath.makeAddress routes, @props.route
 
     oldAddress = location.hash.substr(1)
 

@@ -63,7 +63,7 @@ module.exports = React.createClass
 
   renderAddress: ->
     Addressbar
-      router: @props.store.get('router')
+      route: @props.store.get('router')
       rules: routes
       onPopstate: @onPopstate
       inHash: false
