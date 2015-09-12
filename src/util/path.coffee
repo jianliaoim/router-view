@@ -32,7 +32,6 @@ exports.parse = (segment) ->
   Immutable.fromJS(path: thePath, query: theQuery)
 
 exports.stringify = (info) ->
-  # console.log :stringify (info.toJS)
   stringPath = info.get('path').join('/')
   stringQuery = info.get('query')
   .map (value, key) ->
@@ -88,14 +87,26 @@ exports.getCurrentInfo = (rules) ->
   info = null
   if targetRule.get('failed')
     console.error 'Case not covered in rules: ' + address
+    Immutable.Map
+      name: '404'
+      data: null
+      query: addressInfo.get('query')
   else
-    info = Immutable.Map(
+    Immutable.Map
       name: targetRule.get('name')
       data: targetRule.get('data')
-      query: addressInfo.get('query'))
-  info
+      query: addressInfo.get('query')
 
 exports.expandRoutes = (rules) ->
   rules.map (rule, name) ->
     info = exports.parse(rule)
     info.set 'name', name
+
+exports.makeAddress = (expandedRoutes, route) ->
+  # console.log :address (this.state.rules.toJS) (this.props.router.toJS)
+  info = expandedRoutes.get route.get('name')
+  newInfo = info
+  .set 'path', exports.fill (info.get 'path'), route.get('data')
+  .set 'query', route.get('query')
+
+  exports.stringify newInfo

@@ -1,6 +1,5 @@
 
 assert = require 'assert'
-colors = require 'colors'
 Immutable = require 'immutable'
 
 pathUtil = require './src/util/path'
@@ -8,22 +7,19 @@ pathUtil = require './src/util/path'
 o = Immutable.Map()
 fromJS = Immutable.fromJS
 
-console.log ''
-console.log colors.yellow "Running test..."
-
 testTrimSlash = ->
-  console.log colors.blue "* test on trim slash"
+  console.log "* test on trim slash"
   assert.equal pathUtil.trimSlash('/a/b/c'), 'a/b/c'
   assert.equal pathUtil.trimSlash('/a/b/'), 'a/b'
 
 testQueryParse = ->
-  console.log colors.blue '* test on query parser'
+  console.log '* test on query parser'
   result = pathUtil.queryParse(o, fromJS('a=1&b=2'.split('&')))
   expected = {a: '1', b: '2'}
   assert.deepEqual result.toJS(), expected
 
 testStringify = ->
-  console.log colors.blue '* test on stringify'
+  console.log '* test on stringify'
   info = fromJS
     path: ['a', 'b']
     query:
@@ -46,7 +42,7 @@ testStringify = ->
   assert.equal pathUtil.stringify(info), expected
 
 testFill = ->
-  console.log colors.blue '* test on fill'
+  console.log '* test on fill'
   pieces = fromJS ['team', ':teamId', 'room', ':roomId']
   data = fromJS teamId: '12', roomId: '34'
   result = pathUtil.fill pieces, data
@@ -54,7 +50,7 @@ testFill = ->
   assert.deepEqual result.toJS(), expected.toJS()
 
 testMatch = ->
-  console.log colors.blue '* test on match'
+  console.log '* test on match'
   pieces = fromJS ['a', 'b', 'c', 'd']
   rule = fromJS ['a', ':x', 'c', ':y']
   result = pathUtil.match pieces, rule
@@ -76,7 +72,7 @@ testMatch = ->
   assert.deepEqual result.toJS(), expected
 
 testExpandRoutes = ->
-  console.log colors.blue '* test on expand rule'
+  console.log '* test on expand rule'
   rules = fromJS
     a: '/a'
   result = pathUtil.expandRoutes rules
@@ -152,11 +148,30 @@ testExpandRoutes = ->
         a: '1'
   assert.deepEqual result.toJS(), expected
 
+testMakeAddress = ->
+  console.log '* test make address'
+  routes = pathUtil.expandRoutes fromJS(a: '/b/:c/d')
+  route = fromJS
+    name: 'a'
+    data:
+      c: '1'
+    query:
+      a: 'x'
+  result = pathUtil.makeAddress routes, route
+  expected = '/b/1/d?a=x'
+  assert.equal result, expected
+
 # Run
 
-testTrimSlash()
-testQueryParse()
-testStringify()
-testFill()
-testMatch()
-testExpandRoutes()
+exports.run = ->
+  console.group "Running test..."
+
+  testTrimSlash()
+  testQueryParse()
+  testStringify()
+  testFill()
+  testMatch()
+  testExpandRoutes()
+  testMakeAddress()
+
+  console.groupEnd()

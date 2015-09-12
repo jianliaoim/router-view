@@ -1,6 +1,7 @@
 React = require('react/addons')
 Immutable = require('immutable')
 
+test = require '../../test'
 actions = require('../actions')
 routes = require('../routes')
 
@@ -56,6 +57,10 @@ module.exports = React.createClass
 
   onPopstate: (info) ->
     actions.go info.toJS()
+
+  onTestClick: ->
+    test.run()
+
   renderAddress: ->
     Addressbar
       router: @props.store.get('router')
@@ -80,6 +85,7 @@ module.exports = React.createClass
       div className: 'line is-minor',
         span(null, 'Location bar is a view! So we time travel! ')
         a href: 'http://github.com/mvc-works/router-view', 'Read more on GitHub'
+        div className: 'button is-attract', onClick: @onTestClick, 'Test'
 
   render: ->
     div className: 'app-page',

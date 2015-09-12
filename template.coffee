@@ -14,7 +14,7 @@ module.exports = (data) ->
   stir.render stir.doctype(),
     html null,
       head null,
-        title null, ":Router View"
+        title null, "Router View"
         meta charset: 'utf-8'
         link rel: 'icon', href: 'http://mvc-works.org/png/mvc.png'
         script src: data.vendor, defer: true

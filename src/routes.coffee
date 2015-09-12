@@ -7,3 +7,4 @@ module.exports = Immutable.fromJS
   skip: '/skip/~'
   team: 'team/:teamId'
   room: 'team/:teamId/room/:roomId'
+  404: '404'
