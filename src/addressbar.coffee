@@ -13,24 +13,60 @@ module.exports = React.createClass
     router: React.PropTypes.instanceOf(Immutable.Map)
     rules: React.PropTypes.object.isRequired
     onPopstate: React.PropTypes.func.isRequired
+    inHash: React.PropTypes.bool
+
+  getDefaultProps: ->
+    inHash: false
+
+  inHash: ->
+    @props.inHash or (not window.history?)
 
   componentDidMount: ->
-    window.addEventListener 'popstate', this.onPopstate
+    if @inHash()
+      window.addEventListener 'hashchange', @onHashchange
+    else
+      window.addEventListener 'popstate', @onPopstate
 
   conponentWillUnMount: ->
-    window.removeEventListener 'popstate', @onPopstate
+    if @inHash()
+      window.removeEventListener 'hashchange', @onHashchange
+    else
+      window.removeEventListener 'popstate', @onPopstate
 
   onPopstate: ->
-    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules)
+    address = location.pathname + (location.search or '')
+    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
     @props.onPopstate info
 
-  render: ->
+  onHashchange: ->
+    address = location.hash.substr(1)
+    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
+    @props.onPopstate info
+
+  renderInHistory: (address) ->
     routes = utilPath.expandRoutes(@props.rules)
     address = utilPath.makeAddress routes, @props.router
     if location.search?
       oldAddress = "#{location.pathname}#{location.search}"
     else
       oldAddress = location.pathname
+
     if oldAddress isnt address
       history.pushState null, null, address
+
+  renderInHash: (address) ->
+    routes = utilPath.expandRoutes(@props.rules)
+    address = utilPath.makeAddress routes, @props.router
+
+    oldAddress = location.hash.substr(1)
+
+    if oldAddress isnt address
+      location.hash = "##{address}"
+
+  render: ->
+    if @inHash()
+      @renderInHash()
+    else
+      @renderInHistory()
+
     div className: 'addressbar'

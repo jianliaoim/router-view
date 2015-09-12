@@ -75,8 +75,7 @@ exports.match = (pieces, rulePieces) ->
   # console.log :result (result.toJS)
   result
 
-exports.getCurrentInfo = (rules) ->
-  address = location.pathname + (location.search or '')
+exports.getCurrentInfo = (rules, address) ->
   addressInfo = exports.parse(address)
   targetRule = rules.reduce (acc, rule) ->
     if acc.get('failed')
@@ -86,7 +85,6 @@ exports.getCurrentInfo = (rules) ->
   , Immutable.fromJS(failed: true)
   info = null
   if targetRule.get('failed')
-    console.error 'Case not covered in rules: ' + address
     Immutable.Map
       name: '404'
       data: null

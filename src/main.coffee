@@ -13,9 +13,11 @@ routes = require './routes'
 
 Page = React.createFactory require './app/page'
 
+oldAddress = "#{location.pathname}#{location.search}"
+# oldAddress = location.hash.substr(1)
 defaultInfo =
   initial: schema.store.set 'router',
-    utilPath.getCurrentInfo(utilPath.expandRoutes(routes))
+    utilPath.getCurrentInfo(utilPath.expandRoutes(routes), oldAddress)
   updater: updater
 
 recorder.setup defaultInfo

@@ -66,6 +66,7 @@ module.exports = React.createClass
       router: @props.store.get('router')
       rules: routes
       onPopstate: @onPopstate
+      inHash: false
 
   renderController: ->
     Controller
