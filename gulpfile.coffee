@@ -17,7 +17,7 @@ gulp.task 'rsync', (cb) ->
     ]
     recursive: true
     args: [ '--verbose' ]
-    dest: 'talkai:~/repo/router-view/'
+    dest: 'tiye:~/repo/router-view/'
     deleteAll: true
   }, (error, stdout, stderr, cmd) ->
     if error != null
@@ -38,8 +38,8 @@ gulp.task 'html', (cb) ->
   assets = undefined
   if !env.dev
     assets = require('./build/assets.json')
-    env.main = './build/' + assets.main
-    env.vendor = './build/' + assets.vendor
+    env.main = '/build/' + assets.main
+    env.vendor = '/build/' + assets.vendor
   fs.writeFile 'index.html', html(env), cb
 
 gulp.task 'del', (cb) ->

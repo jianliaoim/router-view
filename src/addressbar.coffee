@@ -10,56 +10,63 @@ module.exports = React.createClass
   displayName: 'addressbar'
 
   propTypes:
-    router: React.PropTypes.instanceOf(Immutable.Map)
+    route: React.PropTypes.instanceOf(Immutable.Map)
     rules: React.PropTypes.object.isRequired
-    inHash: React.PropTypes.bool
     onPopstate: React.PropTypes.func.isRequired
+    inHash: React.PropTypes.bool
 
   getDefaultProps: ->
-    hash: false
+    inHash: false
 
-  getInitialState: ->
-    inHash: this.props.inHash or (not window.history?)
-    rules: this.expandRules()
+  inHash: ->
+    @props.inHash or (not window.history?)
 
   componentDidMount: ->
-    window.addEventListener 'popstate', this.onPopstate
+    if @inHash()
+      window.addEventListener 'hashchange', @onHashchange
+    else
+      window.addEventListener 'popstate', @onPopstate
 
-  getName: ->
-    this.props.router.get 'name'
-
-  getData: ->
-    this.props.router.get 'data'
-
-  getQuery: ->
-    this.props.router.get 'query'
-
-  expandRules: ->
-    this.props.rules.map (rule, name) ->
-      info = utilPath.parse rule
-      info.set 'name', name
+  conponentWillUnMount: ->
+    if @inHash()
+      window.removeEventListener 'hashchange', @onHashchange
+    else
+      window.removeEventListener 'popstate', @onPopstate
 
   onPopstate: ->
-    info = utilPath.getCurrentInfo this.state.rules
-    if info?
-      this.props.onPopstate info
+    address = location.pathname + (location.search or '')
+    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
+    @props.onPopstate info
 
-  renderAddress: ->
-    # console.log :address (this.state.rules.toJS) (this.props.router.toJS)
-    info = this.state.rules.get this.getName()
-    data = this.getData()
-    newInfo = info
-    .set 'path', utilPath.fill (info.get 'path'), data
-    .set 'query', this.getQuery()
+  onHashchange: ->
+    address = location.hash.substr(1)
+    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
+    @props.onPopstate info
 
-    utilPath.stringify newInfo
-
-  render: ->
-    address = this.renderAddress()
+  renderInHistory: (address) ->
+    routes = utilPath.expandRoutes(@props.rules)
+    address = utilPath.makeAddress routes, @props.route
     if location.search?
       oldAddress = "#{location.pathname}#{location.search}"
     else
       oldAddress = location.pathname
+
     if oldAddress isnt address
       history.pushState null, null, address
+
+  renderInHash: (address) ->
+    routes = utilPath.expandRoutes(@props.rules)
+    address = utilPath.makeAddress routes, @props.route
+
+    oldAddress = location.hash.substr(1)
+
+    if oldAddress isnt address
+      location.hash = "##{address}"
+
+  render: ->
+    if @inHash()
+      @renderInHash()
+    else
+      @renderInHistory()
+
     div className: 'addressbar'
