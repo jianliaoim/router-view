@@ -20,10 +20,11 @@ npm i --save router-view
 ```
 
 ```coffee
+Immutable = require 'immutable'
 Addressbar = require 'router-view'
 utilPath = require 'router-view/lib/util/path'
 
-rules = [
+rules = Immutable.fromJS [
   ['home', '/']
   ['demo', '/demo']
   ['skip', '/skip/~']
@@ -32,8 +33,8 @@ rules = [
   ['404', '~']
 ]
 
-oldAddress = "#{location.pathname}#{location.search}"
-# oldAddress = location.hash.substr(1)
+oldAddress = "#{location.pathname}#{location.search}" # for history API
+# oldAddress = location.hash.substr(1) # for hash
 router = utilPath.getCurrentInfo(utilPath.expandRoutes(rules), oldAddress)
 store = store.set 'router', router
 
@@ -41,7 +42,7 @@ Addressbar
   route: store.get('router')
   rules: routes
   onPopstate: (info) ->
-  inHash: false
+  inHash: false # fallback to hash from history API
 ```
 
 `~` refers to "any path" in this library. And in store the route information is like:
