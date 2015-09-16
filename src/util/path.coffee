@@ -96,13 +96,16 @@ exports.getCurrentInfo = (rules, address) ->
       query: addressInfo.get('query')
 
 exports.expandRoutes = (rules) ->
-  rules.map (rule, name) ->
+  rules.map (pair) ->
+    name = pair.get(0)
+    rule = pair.get(1)
     info = exports.parse(rule)
     info.set 'name', name
 
 exports.makeAddress = (expandedRoutes, route) ->
   # console.log :address (this.state.rules.toJS) (this.props.router.toJS)
-  info = expandedRoutes.get route.get('name')
+  info = expandedRoutes.find (ruleInfo) ->
+    ruleInfo.get('name') is route.get('name')
   newInfo = info
   .set 'path', exports.fill (info.get 'path'), route.get('data')
   .set 'query', route.get('query')

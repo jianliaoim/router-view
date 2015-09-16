@@ -23,13 +23,14 @@ npm i --save router-view
 Addressbar = require 'router-view'
 utilPath = require 'router-view/lib/util/path'
 
-rules =
-  home: '/'
-  demo: '/demo'
-  skip: '/skip/~'
-  team: 'team/:teamId'
-  room: 'team/:teamId/room/:roomId'
-  404: '~'
+rules = [
+  ['home', '/']
+  ['demo', '/demo']
+  ['skip', '/skip/~']
+  ['team', 'team/:teamId']
+  ['room', 'team/:teamId/room/:roomId']
+  ['404', '~']
+]
 
 oldAddress = "#{location.pathname}#{location.search}"
 # oldAddress = location.hash.substr(1)

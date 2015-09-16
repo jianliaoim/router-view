@@ -73,84 +73,91 @@ testMatch = ->
 
 testExpandRoutes = ->
   console.log '* test on expand rule'
-  rules = fromJS
-    a: '/a'
+  rules = fromJS [
+    ['a', '/a']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    a:
-      name: 'a'
-      path: ['a']
-      query: {}
+  expected = [
+    name: 'a'
+    path: ['a']
+    query: {}
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    b: '/b/2'
+  rules = fromJS [
+    ['b', '/b/2']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    b:
-      name: 'b'
-      path: ['b', '2']
-      query: {}
+  expected = [
+    name: 'b'
+    path: ['b', '2']
+    query: {}
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    c: '/c?a=1'
+  rules = fromJS [
+    ['c', '/c?a=1']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    c:
-      name: 'c'
-      path: ['c']
-      query:
-        a: '1'
+  expected = [
+    name: 'c'
+    path: ['c']
+    query:
+      a: '1'
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    d: '/d/?a=1'
+  rules = fromJS [
+    ['d', '/d/?a=1']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    d:
-      name: 'd'
-      path: ['d']
-      query:
-        a: '1'
+  expected = [
+    name: 'd'
+    path: ['d']
+    query:
+      a: '1'
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    e: '/e/?a=1&b=2'
+  rules = fromJS [
+    ['e', '/e/?a=1&b=2']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    e:
-      name: 'e'
-      path: ['e']
-      query:
-        a: '1'
-        b: '2'
+  expected = [
+    name: 'e'
+    path: ['e']
+    query:
+      a: '1'
+      b: '2'
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    f: '/f/~'
+  rules = fromJS [
+    ['f', '/f/~']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    f:
-      name: 'f'
-      path: ['f', '~']
-      query: {}
+  expected = [
+    name: 'f'
+    path: ['f', '~']
+    query: {}
+  ]
   assert.deepEqual result.toJS(), expected
 
-  rules = fromJS
-    f: '/f/~?a=1'
+  rules = fromJS [
+    ['f', '/f/~?a=1']
+  ]
   result = pathUtil.expandRoutes rules
-  expected =
-    f:
-      name: 'f'
-      path: ['f', '~']
-      query:
-        a: '1'
+  expected = [
+    name: 'f'
+    path: ['f', '~']
+    query:
+      a: '1'
+  ]
   assert.deepEqual result.toJS(), expected
 
 testMakeAddress = ->
   console.log '* test make address'
-  routes = pathUtil.expandRoutes fromJS(a: '/b/:c/d')
+  routes = pathUtil.expandRoutes fromJS [['a', '/b/:c/d']]
   route = fromJS
     name: 'a'
     data:
