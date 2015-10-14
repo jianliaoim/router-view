@@ -2,7 +2,7 @@
 assert = require 'assert'
 Immutable = require 'immutable'
 
-pathUtil = require './src/util/path'
+pathUtil = require './src/path'
 
 o = Immutable.Map()
 fromJS = Immutable.fromJS

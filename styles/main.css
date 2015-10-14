@@ -1,15 +1,52 @@
 
 body {
+  margin: 0;
 }
 
-.actions-recorder-controller {
-  width: 300px;
+body * {
+  box-sizing: border-box;
 }
 
 .app-page {
-  padding: 40px;
+  display: flex;
+  flex-direction: row;
+  background-image: url(../images/traffic.jpg);
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  color: white;
+  font-family: Verdana, Helvetica, sans-serif;
+}
+
+.app-ui {
+  padding: 10px 40px;
+  width: 800px;
+  background-color: hsla(0,0%,0%,0.7);
+  line-height: 1.5em;
+}
+
+.line {
+  line-height: 2em;
 }
 
 .page-divider {
   margin: 40px 0;
+}
+
+.devtools-layer {
+  flex: 1;
+}
+
+.button {
+  display: inline-block;
+  margin-right: 10px;
+  background-color: hsla(240,80%,80%,0.6);
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+a {
+  color: hsla(240,80%,80%,0.8);
 }

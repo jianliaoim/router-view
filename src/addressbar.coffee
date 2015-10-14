@@ -1,8 +1,7 @@
 
 React = require 'react'
 Immutable = require 'immutable'
-utilPath = require './util/path'
-prelude = require './util/prelude'
+pathUtil = require './path'
 
 div = React.createFactory 'div'
 
@@ -10,8 +9,8 @@ module.exports = React.createClass
   displayName: 'addressbar'
 
   propTypes:
-    route: React.PropTypes.instanceOf(Immutable.Map)
-    rules: React.PropTypes.object.isRequired
+    route: React.PropTypes.instanceOf(Immutable.Map).isRequired
+    rules: React.PropTypes.instanceOf(Immutable.List).isRequired
     onPopstate: React.PropTypes.func.isRequired
     inHash: React.PropTypes.bool
 
@@ -35,17 +34,17 @@ module.exports = React.createClass
 
   onPopstate: ->
     address = location.pathname + (location.search or '')
-    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
+    info = pathUtil.getCurrentInfo @props.rules, address
     @props.onPopstate info
 
   onHashchange: ->
     address = location.hash.substr(1)
-    info = utilPath.getCurrentInfo utilPath.expandRoutes(@props.rules), address
+    info = pathUtil.getCurrentInfo @props.rules, address
     @props.onPopstate info
 
   renderInHistory: (address) ->
-    routes = utilPath.expandRoutes(@props.rules)
-    address = utilPath.makeAddress routes, @props.route
+    routes = @props.rules
+    address = pathUtil.makeAddress routes, @props.route
     if location.search?
       oldAddress = "#{location.pathname}#{location.search}"
     else
@@ -55,8 +54,8 @@ module.exports = React.createClass
       history.pushState null, null, address
 
   renderInHash: (address) ->
-    routes = utilPath.expandRoutes(@props.rules)
-    address = utilPath.makeAddress routes, @props.route
+    routes = @props.rules
+    address = pathUtil.makeAddress routes, @props.route
 
     oldAddress = location.hash.substr(1)
 

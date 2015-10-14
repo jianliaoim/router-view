@@ -1,10 +1,10 @@
 
-routerController = require './controllers/router'
+router = require './router'
 
 module.exports = (store, actionType, actionData) ->
   switch actionType
     when 'router/go'
-      routerController.go store, actionData
+      router.go store, actionData
     else
       console.warn ":Unknown action type: #{actionType}"
       store

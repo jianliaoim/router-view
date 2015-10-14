@@ -1,7 +1,9 @@
 
+pathUtil = require './path'
+
 Immutable = require 'immutable'
 
-module.exports = Immutable.fromJS [
+module.exports = pathUtil.expandRoutes [
   ['home', '/']
   ['demo', '/demo']
   ['skip', '/skip/~']

@@ -2,20 +2,18 @@
 React = require 'react'
 recorder = require 'actions-recorder'
 
-require 'origami-ui'
-require 'actions-recorder/style/actions-recorder.css'
 require '../styles/main.css'
 
 schema = require './schema'
 updater = require './updater'
-utilPath = require './util/path'
+pathUtil = require './path'
 routes = require './routes'
 
 Page = React.createFactory require './app/page'
 
 oldAddress = "#{location.pathname}#{location.search}"
 # oldAddress = location.hash.substr(1)
-router = utilPath.getCurrentInfo(utilPath.expandRoutes(routes), oldAddress)
+router = pathUtil.getCurrentInfo(routes, oldAddress)
 defaultInfo =
   initial: schema.store.set 'router', router
   updater: updater

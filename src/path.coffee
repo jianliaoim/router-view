@@ -1,6 +1,5 @@
 
 Immutable = require 'immutable'
-prelude = require './prelude'
 
 exports.trimSlash = trimSlash = (chunk) ->
   if chunk.substr(0, 1) is '/'
@@ -96,7 +95,7 @@ exports.getCurrentInfo = (rules, address) ->
       query: addressInfo.get('query')
 
 exports.expandRoutes = (rules) ->
-  rules.map (pair) ->
+  Immutable.fromJS(rules).map (pair) ->
     name = pair.get(0)
     rule = pair.get(1)
     info = exports.parse(rule)

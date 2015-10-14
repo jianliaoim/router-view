@@ -4,8 +4,9 @@ Immutable = require('immutable')
 test = require '../../test'
 actions = require('../actions')
 routes = require('../routes')
+updater = require '../updater'
 
-Controller = React.createFactory(require('actions-recorder/lib/panel/controller'))
+Devtools = React.createFactory require('actions-recorder/lib/devtools')
 Addressbar = React.createFactory(require('../addressbar'))
 
 a = React.createFactory('a')
@@ -68,31 +69,29 @@ module.exports = React.createClass
       onPopstate: @onPopstate
       inHash: false
 
-  renderController: ->
-    Controller
+  renderDevtools: ->
+    Devtools
       records: @props.core.records
       pointer: @props.core.pointer
       isTravelling: @props.core.isTravelling
-      onCommit: actions.internalCommit
-      onSwitch: actions.internalSwitch
-      onReset: actions.internalReset
-      onPeek: (position) ->
-        actions.internalPeek position
-      onDiscard: actions.internalDiscard
+      updater: updater
+      store: @props.store
+      initial: @props.core.initial
+      width: 800
+      height: window.innerHeight
 
   renderBanner: ->
     div className: 'bannr',
       div className: 'heading level-2', 'Router View for React'
-      div className: 'line is-minor',
+      div className: '',
         span(null, 'Location bar is a view! So we time travel! ')
         a href: 'http://github.com/mvc-works/router-view', 'Read more on GitHub'
         div className: 'button is-attract', onClick: @onTestClick, 'Test'
 
-  render: ->
-    div className: 'app-page',
+  renderUI: ->
+    div className: 'app-ui',
       @renderBanner()
       @renderAddress()
-      @renderController()
       div(className: 'page-divider')
       div className: 'line',
         div className: 'button is-attract', onClick: @goHome, 'goHome'
@@ -109,3 +108,9 @@ module.exports = React.createClass
         span({ className: 'is-bold' }, 'Store is:')
       pre { className: 'page-content' },
         JSON.stringify(@props.store, null, 2)
+
+  render: ->
+    div className: 'app-page',
+      @renderUI()
+      div className: 'devtools-layer',
+        @renderDevtools()

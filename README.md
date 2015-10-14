@@ -20,22 +20,21 @@ npm i --save router-view
 ```
 
 ```coffee
-Immutable = require 'immutable'
 Addressbar = require 'router-view'
-utilPath = require 'router-view/lib/util/path'
+pathUtil = require 'router-view/lib/path'
 
-rules = Immutable.fromJS [
+rules = pathUtil.expandRoutes [
   ['home', '/']
   ['demo', '/demo']
   ['skip', '/skip/~']
-  ['team', 'team/:teamId']
-  ['room', 'team/:teamId/room/:roomId']
+  ['team', '/team/:teamId']
+  ['room', '/team/:teamId/room/:roomId']
   ['404', '~']
 ]
 
 oldAddress = "#{location.pathname}#{location.search}" # for history API
 # oldAddress = location.hash.substr(1) # for hash
-router = utilPath.getCurrentInfo(utilPath.expandRoutes(rules), oldAddress)
+router = pathUtil.getCurrentInfo rules, oldAddress
 store = store.set 'router', router
 
 Addressbar
@@ -45,7 +44,9 @@ Addressbar
   inHash: false # fallback to hash from history API
 ```
 
-`~` refers to "any path" in this library. And in store the route information is like:
+`~` refers to "any path" in this library.
+
+And in store the route information is like:
 
 ```coffee
 name: 'room'
@@ -57,6 +58,10 @@ query:
 ```
 
 Parameters and querystrings are supported. Get this from store and render the page.
+
+### Theme
+
+http://archwall.xyz/wp-content/uploads/2015/09/skyscrapers-city-sleeps-blue-ocean-skyscrapers-sky-aerial-skyline-beautiful-evening-streets-buildings-lights-traffic-night-shore-free-wallpapers.jpg
 
 ### License
 
