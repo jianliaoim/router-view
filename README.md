@@ -40,7 +40,7 @@ store = store.set 'router', router
 Addressbar
   route: store.get('router')
   rules: routes
-  onPopstate: (info) ->
+  onPopstate: (info, event) ->
   inHash: false # fallback to hash from history API
 ```
 
