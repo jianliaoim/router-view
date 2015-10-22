@@ -42,6 +42,7 @@ Addressbar
   rules: routes
   onPopstate: (info, event) ->
   inHash: false # fallback to hash from history API
+  duringLoading: false # set true to give up refreshing url
 ```
 
 `~` refers to "any path" in this library.
@@ -62,7 +63,7 @@ Parameters and querystrings are supported. Get this from store and render the pa
 ### Notice
 
 * keep in mind that `router-view` is totally based on `immutable-js`.
-* if you need to route asynchronously, try `event.preventDefault()` to disable default hebaviors of browsers.
+* if you need to route asynchronously, try set `skipRendering` to `true` during loading
 * `undefined` value is eliminated on purpose, fire an issue if you think differenly.
 
 ### Theme

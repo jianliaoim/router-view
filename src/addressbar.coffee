@@ -13,9 +13,11 @@ module.exports = React.createClass
     rules: React.PropTypes.instanceOf(Immutable.List).isRequired
     onPopstate: React.PropTypes.func.isRequired
     inHash: React.PropTypes.bool
+    skipRendering: React.PropTypes.bool
 
   getDefaultProps: ->
     inHash: false
+    skipRendering: false
 
   inHash: ->
     @props.inHash or (not window.history?)
@@ -32,10 +34,10 @@ module.exports = React.createClass
     else
       window.removeEventListener 'popstate', @onPopstate
 
-  onPopstate: (event) ->
+  onPopstate: ->
     address = location.pathname + (location.search or '')
     info = pathUtil.getCurrentInfo @props.rules, address
-    @props.onPopstate info, event
+    @props.onPopstate info
 
   onHashchange: ->
     address = location.hash.substr(1)
@@ -50,7 +52,7 @@ module.exports = React.createClass
     else
       oldAddress = location.pathname
 
-    if oldAddress isnt address
+    if oldAddress isnt address and not @props.skipRendering
       history.pushState null, null, address
 
   renderInHash: (address) ->
@@ -59,7 +61,7 @@ module.exports = React.createClass
 
     oldAddress = location.hash.substr(1)
 
-    if oldAddress isnt address
+    if oldAddress isnt address and not @props.skipRendering
       location.hash = "##{address}"
 
   render: ->
