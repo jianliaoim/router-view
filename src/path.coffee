@@ -33,6 +33,8 @@ exports.parse = (segment) ->
 exports.stringify = (info) ->
   stringPath = info.get('path').join('/')
   stringQuery = info.get('query')
+  .filter (value, key) ->
+    value?
   .map (value, key) ->
     "#{key}=#{value}"
   .join '&'

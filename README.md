@@ -15,7 +15,7 @@ So I suggest location bar being regarded as a view of store.
 
 ### Usage
 
-```
+```bash
 npm i --save router-view
 ```
 
@@ -46,7 +46,7 @@ Addressbar
 
 `~` refers to "any path" in this library.
 
-And in store the route information is like:
+And in store the route information (`info`) is like:
 
 ```coffee
 name: 'room'
@@ -58,6 +58,12 @@ query:
 ```
 
 Parameters and querystrings are supported. Get this from store and render the page.
+
+### Notice
+
+* keep in mind that `router-view` is totally based on `immutable-js`.
+* if you need to route asynchronously, try `event.preventDefault()` to disable default hebaviors of browsers.
+* `undefined` value is eliminated on purpose, fire an issue if you think differenly.
 
 ### Theme
 
