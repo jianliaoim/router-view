@@ -40,6 +40,9 @@ module.exports = React.createClass
     @props.onPopstate info
 
   onHashchange: ->
+    if location.hash is @_cacheRenderedHash
+      # changing hash in JavaScript will trigger event, by pass
+      return
     address = location.hash.substr(1)
     info = pathUtil.getCurrentInfo @props.rules, address
     @props.onPopstate info
@@ -63,6 +66,7 @@ module.exports = React.createClass
 
     if oldAddress isnt address and not @props.skipRendering
       location.hash = "##{address}"
+      @_cacheRenderedHash = location.hash
 
   render: ->
     if @inHash()
