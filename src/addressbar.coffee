@@ -34,10 +34,10 @@ module.exports = React.createClass
     else
       window.removeEventListener 'popstate', @onPopstate
 
-  onPopstate: ->
+  onPopstate: (event) ->
     address = location.pathname + (location.search or '')
     info = pathUtil.getCurrentInfo @props.rules, address
-    @props.onPopstate info
+    @props.onPopstate info, event
 
   onHashchange: ->
     if location.hash is @_cacheRenderedHash

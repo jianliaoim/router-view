@@ -56,8 +56,9 @@ module.exports = React.createClass
         roomId: '34'
       query: isPrivate: 'true'
 
-  onPopstate: (info) ->
-    actions.go info.toJS()
+  onPopstate: (info, event) ->
+    if event.state?
+      actions.go info.toJS()
 
   onTestClick: ->
     test.run()
