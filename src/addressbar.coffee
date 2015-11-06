@@ -69,9 +69,10 @@ module.exports = React.createClass
       @_cacheRenderedHash = location.hash
 
   render: ->
-    if @inHash()
-      @renderInHash()
-    else
-      @renderInHistory()
+    if (typeof window) isnt 'undefined'
+      if @inHash()
+        @renderInHash()
+      else
+        @renderInHistory()
 
     div className: 'addressbar'

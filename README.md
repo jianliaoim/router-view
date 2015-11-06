@@ -8,10 +8,10 @@ This project is based on `react` and `immutable-js`.
 
 Demo http://router-view.mvc-works.org/
 
-### Core ideas
+### Initial idea
 
 In time travelling debugger, router is not controlled.
-So I suggest location bar being regarded as a view of store.
+So I suggest location bar being regarded as a view of store in order to be controlled.
 
 ### Usage
 
@@ -42,7 +42,7 @@ Addressbar
   rules: routes
   onPopstate: (info, event) ->
   inHash: false # fallback to hash from history API
-  duringLoading: false # set true to give up refreshing url
+  skipRendering: false # true to allow model/view inconsistency during loading
 ```
 
 `~` refers to "any path" in this library.
