@@ -18,6 +18,13 @@ testQueryParse = ->
   expected = {a: '1', b: '2'}
   assert.deepEqual result.toJS(), expected
 
+testChineseQueryParse = ->
+  console.log '* test on Chinese query parser'
+  text = encodeURIComponent '中文'
+  result = pathUtil.queryParse(o, fromJS("#{text}=#{text}".split('&')))
+  expected = {'中文': '中文'}
+  assert.deepEqual result.toJS(), expected
+
 testStringify = ->
   console.log '* test on stringify'
   info = fromJS
@@ -168,6 +175,19 @@ testMakeAddress = ->
   expected = '/b/1/d?a=x'
   assert.equal result, expected
 
+testMakeChineseAddress = ->
+  console.log '* test make chinese address'
+  routes = pathUtil.expandRoutes fromJS [['a', '/中文/:name']]
+  route = fromJS
+    name: 'a'
+    data:
+      name: '中文'
+    query:
+      '中文': '中文'
+  result = pathUtil.makeAddress routes, route
+  expected = encodeURI("/中文/中文?中文=中文")
+  assert.equal result, expected
+
 # Run
 
 exports.run = ->
@@ -175,10 +195,12 @@ exports.run = ->
 
   testTrimSlash()
   testQueryParse()
+  testChineseQueryParse()
   testStringify()
   testFill()
   testMatch()
   testExpandRoutes()
   testMakeAddress()
+  testMakeChineseAddress()
 
   console.groupEnd()

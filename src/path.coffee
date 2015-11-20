@@ -15,6 +15,8 @@ exports.queryParse = queryParse = (data, chunks) ->
     chunks.reduce (acc, chunk) ->
       pieces = chunk.split('=')
       [key, value] = pieces
+      key = decodeURIComponent key
+      value = decodeURIComponent value
       queryParse acc.set(key, value), chunks.slice(1)
     , data
 
@@ -24,6 +26,7 @@ exports.parse = (segment) ->
   chunkPath = trimSlash(chunkPath)
   chunkQuery = chunkQuery or ''
   thePath = if (chunkPath.length > 0) then chunkPath.split('/') else []
+  thePath = thePath.map decodeURIComponent
   if chunkQuery.length > 0
     theQuery = queryParse o, Immutable.fromJS(chunkQuery.split('&'))
   else
@@ -31,11 +34,13 @@ exports.parse = (segment) ->
   Immutable.fromJS(path: thePath, query: theQuery)
 
 exports.stringify = (info) ->
-  stringPath = info.get('path').join('/')
+  stringPath = info.get('path').map(encodeURIComponent).join('/')
   stringQuery = info.get('query')
   .filter (value, key) ->
     value?
   .map (value, key) ->
+    key = encodeURIComponent key
+    value = encodeURIComponent value
     "#{key}=#{value}"
   .join '&'
 

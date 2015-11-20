@@ -55,6 +55,13 @@ module.exports = React.createClass
         teamId: '23'
         roomId: '34'
       query: isPrivate: 'true'
+  goChinese: ->
+    actions.go
+      name: 'chinese'
+      data:
+        name: '中文'
+      query:
+        '中文': '中文'
 
   onPopstate: (info, event) ->
     if event.state?
@@ -101,6 +108,7 @@ module.exports = React.createClass
         div className: 'button is-attract', onClick: @goTeam, 'goTeam'
         div className: 'button is-attract', onClick: @goRoom, 'goRoom'
         div className: 'button is-attract', onClick: @goQuery, 'goQuery'
+        div className: 'button is-attract', onClick: @goChinese, 'goChinese'
       div className: 'line',
         span(null, 'Also try: ')
         a({ href: '/skip/whatever/path' }, '/skip/whatever/path')
