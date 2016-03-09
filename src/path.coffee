@@ -12,13 +12,12 @@ exports.queryParse = queryParse = (data, chunks) ->
   if (chunks.size is 0)
     data
   else
-    chunks.reduce (acc, chunk) ->
-      pieces = chunk.split('=')
-      [key, value] = pieces
-      key = decodeURIComponent key
-      value = decodeURIComponent value
-      queryParse acc.set(key, value), chunks.slice(1)
-    , data
+    chunk = chunks.first()
+    pieces = chunk.split('=')
+    [key, value] = pieces
+    key = decodeURIComponent key
+    value = decodeURIComponent value
+    queryParse data.set(key, value), chunks.slice(1)
 
 o = Immutable.Map()
 exports.parse = (segment) ->

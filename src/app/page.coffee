@@ -64,8 +64,7 @@ module.exports = React.createClass
         '中文': '中文'
 
   onPopstate: (info, event) ->
-    if event.state?
-      actions.go info.toJS()
+    actions.go info.toJS()
 
   onTestClick: ->
     test.run()
